@@ -1,0 +1,18 @@
+cmake_minimum_required(VERSION 2.6)
+set(FDUSERDATA_VERSION_STRING 0.0.1)
+set(FDUSERDATA_VERSION_MAJOR 0)
+add_definitions(-D_GNU_SOURCE)
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+set(HEADERS_INSTALL_PATH ${CMAKE_INSTALL_PREFIX}/include)
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
+
+set(FDUSERDATA_SOURCES fduserdata.c)
+add_library(fduserdata SHARED ${FDUSERDATA_SOURCES})
+
+set_target_properties(fduserdata PROPERTIES VERSION ${FDUSERDATA_VERSION_STRING}
+        SOVERSION ${FDUSERDATA_VERSION_MAJOR})
+
+install(TARGETS fduserdata LIBRARY DESTINATION lib)
+install(FILES fduserdata.h DESTINATION ${HEADERS_INSTALL_PATH})
+
