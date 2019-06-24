@@ -27,7 +27,7 @@ Allocate a `struct mydata` element connected to the file descriptor `fd` in `tab
     // intialize all mydata  fields
     fduserdata_put(data)
 
-Please note that `fduserdata_put` is required to close the critical section. No other threads can add, read or modify elements in `table` until the current elem`fduserdata_put`ents has been completely intialized and `fduserdata_put` has benn called.
+Please note that `fduserdata_put` is required to close the critical section. No other threads can add, read or modify elements in `table` until the current element has been completely initialized and `fduserdata_put` has been called.
 
 ## search an element/modify
 
