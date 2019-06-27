@@ -9,6 +9,7 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 
 set(FDUSERDATA_SOURCES fduserdata.c)
 add_library(fduserdata SHARED ${FDUSERDATA_SOURCES})
+target_link_libraries(fduserdata pthread)
 
 set_target_properties(fduserdata PROPERTIES VERSION ${FDUSERDATA_VERSION_STRING}
         SOVERSION ${FDUSERDATA_VERSION_MAJOR})
