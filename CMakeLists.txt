@@ -8,7 +8,6 @@ include(GNUInstallDirs)
 add_definitions(-D_GNU_SOURCE)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-set(HEADERS_INSTALL_PATH ${CMAKE_INSTALL_PREFIX}/include)
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 
 set(FDUSERDATA_SOURCES fduserdata.c)
