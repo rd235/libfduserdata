@@ -25,4 +25,4 @@ install(FILES fduserdata.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 install(FILES ${CMAKE_BINARY_DIR}/fduserdata.pc
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 
-
+add_subdirectory(man)
