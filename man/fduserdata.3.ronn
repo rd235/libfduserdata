@@ -1,5 +1,4 @@
-fduserdata(3) -- associate file descriptors with user defined data 
-====
+# <!-- -->
 
 <!--
 .\" Copyright (C) 2019 VirtualSquare. Project Leader: Renzo Davoli
@@ -25,19 +24,23 @@ fduserdata(3) -- associate file descriptors with user defined data
 .\" MA 02110-1301 USA.
 .\"
 -->
-<!-- fduserdata_create, fduserdata_destroy, fduserdata_new - associate file descriptors with user defined data -->
+
+## NAME
+
+fduserdata_create, fduserdata_destroy, fduserdata_new, fduserdata_get, fduserdata_put,
+fduserdata_del	- associate file descriptors with user defined data
 
 ## SYNOPSIS
 
 `#include <fduserdata.h>`
 
-`FDUSERDATA *fduserdata_create(int `_size_`);`
+`FDUSERDATA *fduserdata_create(int ` _size_`);`
 
 `void fduserdata_destroy(FDUSERDATA *`_fdtable_`);`
 
-`void *fduserdata_new(FDUSERDATA *`_fdtable_`, int `_fd_`, `_type_`);`
+`void *fduserdata_new(FDUSERDATA *`_fdtable_`, int ` _fd_`, ` _type_`);`
 
-`void *fduserdata_get(FDUSERDATA *`_fdtable_`, int `_fd_`); `
+`void *fduserdata_get(FDUSERDATA *`_fdtable_`, int ` _fd_`); `
 
 `void fduserdata_put(void *`_data_`);`
 
