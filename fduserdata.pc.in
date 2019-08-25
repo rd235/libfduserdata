@@ -7,5 +7,7 @@ Name: @PROJECT_NAME@
 Description: @PROJECT_DESCRIPTION@
 Version: @PROJECT_VERSION@
 
+Requires: @PROJECT_PC_REQUIRES@
+
 Cflags: -I${includedir}
-Libs: -L${libdir} -l@PROJECT_NAME@
+Libs: -L${libdir} -l@PROJECT_NAME@ @PRIVATE_LIBS@
