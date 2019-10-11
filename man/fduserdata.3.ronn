@@ -48,7 +48,7 @@ fduserdata_del	- associate file descriptors with user defined data
 
 ## DESCRIPTION
 
-This library permits to associate file descriptors with user defined data, more precisely it manages
+This library permits one to associate file descriptors with user defined data, more precisely it manages
 a data structure whose searching key is a file descriptor.
 
 `fduserdata_create` and `fduserdata_destroy` are the constructor and destructor of the data structure, respectively.
@@ -70,7 +70,7 @@ Both `fduserdata_new` and `fduserdata_get` lock the access to the element, so th
 
 `fduserdata_new` returns the element of type _type_ just created (NULL in case of error).
 
-`fduserdata_get` returns the element or NULL if no data correponds to the file descriptor _fd_.
+`fduserdata_get` returns the element or NULL if no data corresponds to the file descriptor _fd_.
 
 `fduserdata_del` On success, zero is returned.  On error, -1 is returned.
 

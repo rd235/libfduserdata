@@ -40,7 +40,7 @@ fduserdata_create, fduserdata_destroy, fduserdata_new, fduserdata_get, fduserdat
 .P
 \fBint fduserdata_del(void *\fR\fIdata\fR\fB);\fR
 .SH "DESCRIPTION"
-This library permits to associate file descriptors with user defined data, more precisely it manages a data structure whose searching key is a file descriptor\.
+This library permits one to associate file descriptors with user defined data, more precisely it manages a data structure whose searching key is a file descriptor\.
 .P
 \fBfduserdata_create\fR and \fBfduserdata_destroy\fR are the constructor and destructor of the data structure, respectively\. The data structure has been implemented as a hash table, the argument \fIsize\fR of \fBfduserdata_create\fR is the size of the hash array\. When \fIsize\fR is zero the hash array has its default size (64)\.
 .P
@@ -56,7 +56,7 @@ Both \fBfduserdata_new\fR and \fBfduserdata_get\fR lock the access to the elemen
 .P
 \fBfduserdata_new\fR returns the element of type \fItype\fR just created (NULL in case of error)\.
 .P
-\fBfduserdata_get\fR returns the element or NULL if no data correponds to the file descriptor \fIfd\fR\.
+\fBfduserdata_get\fR returns the element or NULL if no data corresponds to the file descriptor \fIfd\fR\.
 .P
 \fBfduserdata_del\fR On success, zero is returned\. On error, \-1 is returned\.
 .P
