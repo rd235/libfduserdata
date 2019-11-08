@@ -19,6 +19,7 @@
 #include <errno.h>
 #include <stddef.h>
 #include <pthread.h>
+#include <fduserdata.h>
 
 #define DEFAULT_MASK 0x3f // 63
 
@@ -65,7 +66,7 @@ FDUSERDATA *fduserdata_create(int size) {
 	return table;
 }
 
-void fduserdata_destroy(FDUSERDATA *fdtable) {
+void fduserdata_destroy_cb(FDUSERDATA *fdtable, fduserdata_destr_cb_t callback, void *arg) {
 	if (fdtable != NULL) {
 		int i;
 		pthread_mutex_lock(&fdtable->mutex);
@@ -73,6 +74,8 @@ void fduserdata_destroy(FDUSERDATA *fdtable) {
 			struct fduserdata_item *fdud = fdtable->table[i];
 			while (fdud != NULL) {
 				struct fduserdata_item *this = fdud;
+				if (callback)
+					callback(fdud->fd, fdud->data, arg);
 				fdud = this->next;
 				free(fdud);
 			}
@@ -81,6 +84,10 @@ void fduserdata_destroy(FDUSERDATA *fdtable) {
 		pthread_mutex_destroy(&fdtable->mutex);
 		free(fdtable);
 	}
+}
+
+void fduserdata_destroy(FDUSERDATA *fdtable) {
+	fduserdata_destroy_cb(fdtable, NULL, NULL);
 }
 
 void *__fduserdata_new(FDUSERDATA *fdtable, int fd, size_t count) {
@@ -148,11 +155,15 @@ int fduserdata_del(void *data) {
 		} else {
 			pthread_mutex_unlock(&fdtable->mutex);
 			return errno = EBADF, -1;
-		} 
+		}
 	}
 }
 
 #if 0
+void destructor(int fd, void *data, void *arg) {
+	printf("%d %d\n", fd, *(int *)data);
+}
+
 int main(int argc, char *argv[]) {
 	FDUSERDATA *fdtable = fduserdata_create(0);
 	printf("XXX %d\n", sizeof(struct fduserdata_item));
@@ -193,6 +204,10 @@ int main(int argc, char *argv[]) {
 	data = fduserdata_get(fdtable, 65);
 	if (data) printf("%d\n",*data); else printf("NULL\n");
 	if (data) fduserdata_put(data);
-	fduserdata_destroy(fdtable);
+	data = __fduserdata_new(fdtable, 44, sizeof(* data));
+	if (data) if (data) *data = 44;
+	fduserdata_put(data);
+	//fduserdata_destroy(fdtable);
+	fduserdata_destroy_cb(fdtable, destructor, NULL);
 }
 #endif

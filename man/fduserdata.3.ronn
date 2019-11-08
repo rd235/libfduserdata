@@ -27,7 +27,7 @@
 
 ## NAME
 
-fduserdata_create, fduserdata_destroy, fduserdata_new, fduserdata_get, fduserdata_put,
+fduserdata_create, fduserdata_destroy, fduserdata_destroy_cb, fduserdata_new, fduserdata_get, fduserdata_put,
 fduserdata_del	- associate file descriptors with user defined data
 
 ## SYNOPSIS
@@ -37,6 +37,9 @@ fduserdata_del	- associate file descriptors with user defined data
 `FDUSERDATA *fduserdata_create(int ` _size_`);`
 
 `void fduserdata_destroy(FDUSERDATA *`_fdtable_`);`
+
+`typedef void (*fduserdata_destr_cb_t)(int fd, void *data, void *arg);` <br/>
+`void fduserdata_destroy_cb(FDUSERDATA *`_fdtable_`, fduserdata_destr_cb_t ` _callback_`, void *`_arg_`);`
 
 `void *fduserdata_new(FDUSERDATA *`_fdtable_`, int ` _fd_`, ` _type_`);`
 
@@ -55,6 +58,9 @@ a data structure whose searching key is a file descriptor.
 The data structure has been implemented as a hash table, the argument _size_ of `fduserdata_create` is the size of
 the hash array. When _size_ is zero the hash array has its default size (64).
 
+`fduserdata_destroy_cb` is an alternative destructor which calls the function _callback_ for
+each element still in the data structure.
+
 `fduserdata_new` creates a new element. It is a macro: _type_ is the type of the user data.
 
 `fduserdata_get` search the user data associated to the _fd_.
@@ -63,7 +69,6 @@ Both `fduserdata_new` and `fduserdata_get` lock the access to the element, so th
 `fduserdata_put` unlocks the element and makes it available for further requests.
 
 `fduserdata_del` can be used instead of `fduserdata_put` to delete the element.
-
 
 ## RETURN VALUE
 `fduserdata_create` returns the descriptor of the data structure (NULL in case of error).

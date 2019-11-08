@@ -22,15 +22,19 @@
 .\"
 .\" generated with Ronn-NG/v0.8.0
 .\" http://github.com/apjanke/ronn-ng/tree/0.8.0
-.TH "FDUSERDATA" "3" "October 2019" "VirtualSquare"
+.TH "FDUSERDATA" "3" "November 2019" "VirtualSquare"
 .SH "NAME"
-fduserdata_create, fduserdata_destroy, fduserdata_new, fduserdata_get, fduserdata_put, fduserdata_del \- associate file descriptors with user defined data
+fduserdata_create, fduserdata_destroy, fduserdata_destroy_cb, fduserdata_new, fduserdata_get, fduserdata_put, fduserdata_del \- associate file descriptors with user defined data
 .SH "SYNOPSIS"
 \fB#include <fduserdata\.h>\fR
 .P
 \fBFDUSERDATA *fduserdata_create(int\fR \fIsize\fR\fB);\fR
 .P
 \fBvoid fduserdata_destroy(FDUSERDATA *\fR\fIfdtable\fR\fB);\fR
+.P
+\fBtypedef void (*fduserdata_destr_cb_t)(int fd, void *data, void *arg);\fR
+.br
+\fBvoid fduserdata_destroy_cb(FDUSERDATA *\fR\fIfdtable\fR\fB, fduserdata_destr_cb_t\fR \fIcallback\fR\fB, void *\fR\fIarg\fR\fB);\fR
 .P
 \fBvoid *fduserdata_new(FDUSERDATA *\fR\fIfdtable\fR\fB, int\fR \fIfd\fR\fB,\fR \fItype\fR\fB);\fR
 .P
@@ -43,6 +47,8 @@ fduserdata_create, fduserdata_destroy, fduserdata_new, fduserdata_get, fduserdat
 This library permits one to associate file descriptors with user defined data, more precisely it manages a data structure whose searching key is a file descriptor\.
 .P
 \fBfduserdata_create\fR and \fBfduserdata_destroy\fR are the constructor and destructor of the data structure, respectively\. The data structure has been implemented as a hash table, the argument \fIsize\fR of \fBfduserdata_create\fR is the size of the hash array\. When \fIsize\fR is zero the hash array has its default size (64)\.
+.P
+\fBfduserdata_destroy_cb\fR is an alternative destructor which calls the function \fIcallback\fR for each element still in the data structure\.
 .P
 \fBfduserdata_new\fR creates a new element\. It is a macro: \fItype\fR is the type of the user data\.
 .P

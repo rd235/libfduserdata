@@ -50,6 +50,9 @@ typedef struct fduserdata_table FDUSERDATA;
 FDUSERDATA *fduserdata_create(int size);
 void fduserdata_destroy(FDUSERDATA *fdtable);
 
+typedef void (*fduserdata_destr_cb_t)(int fd, void *data, void *arg);
+void fduserdata_destroy_cb(FDUSERDATA *fdtable, fduserdata_destr_cb_t callback, void *arg);
+
 #define fduserdata_new(fdtable, fd, type) ((type *)(__fduserdata_new((fdtable),(fd),sizeof(type))))
 void *__fduserdata_new(FDUSERDATA *fdtable, int fd, size_t count);
 
