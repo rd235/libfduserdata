@@ -44,6 +44,8 @@
 #ifndef FDUSERDATA_H
 #define FDUSERDATA_H
 
+#include <stddef.h>
+
 struct fduserdata_table;
 typedef struct fduserdata_table FDUSERDATA;
 
