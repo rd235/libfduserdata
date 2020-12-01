@@ -28,9 +28,6 @@
 	((type *)((char *)(ptr) -  offsetof(type,member)))
 #endif
 
-struct fduserdata_table;
-typedef struct fduserdata_table FDUSERDATA;
-
 struct fduserdata_item {
 	struct fduserdata_item *next;
 	struct fduserdata_table *fdtable;
