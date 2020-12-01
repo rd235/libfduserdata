@@ -41,7 +41,7 @@ struct fduserdata_item {
 struct fduserdata_table {
 	int mask;
 	pthread_mutex_t mutex;
-	struct fduserdata_item *table[];
+	struct fduserdata_item **table;
 };
 
 static int size2mask(int x) {
@@ -58,27 +58,31 @@ static int size2mask(int x) {
 
 FDUSERDATA *fduserdata_create(int size) {
 	int mask = size2mask(size);
-	struct fduserdata_table *table = calloc(1, sizeof(struct fduserdata_table) + (mask + 1) * sizeof(struct fduserdata_item *));
-	if (table != NULL) {
-		table->mask = mask;
-		pthread_mutex_init(&table->mutex, NULL);
+	struct fduserdata_table *fdtable = malloc(sizeof(struct fduserdata_table));
+	if (fdtable != NULL) {
+		fdtable->mask = mask;
+		pthread_mutex_init(&fdtable->mutex, NULL);
+		fdtable->table = NULL;
 	}
-	return table;
+	return fdtable;
 }
 
 void fduserdata_destroy_cb(FDUSERDATA *fdtable, fduserdata_destr_cb_t callback, void *arg) {
 	if (fdtable != NULL) {
-		int i;
 		pthread_mutex_lock(&fdtable->mutex);
-		for (i = 0; i < (fdtable->mask + 1) ; i++) {
-			struct fduserdata_item *fdud = fdtable->table[i];
-			while (fdud != NULL) {
-				struct fduserdata_item *this = fdud;
-				if (callback)
-					callback(fdud->fd, fdud->data, arg);
-				fdud = this->next;
-				free(fdud);
+		if (fdtable->table != NULL) {
+			int i;
+			for (i = 0; i < (fdtable->mask + 1) ; i++) {
+				struct fduserdata_item *fdud = fdtable->table[i];
+				while (fdud != NULL) {
+					struct fduserdata_item *this = fdud;
+					if (callback)
+						callback(fdud->fd, fdud->data, arg);
+					fdud = this->next;
+					free(this);
+				}
 			}
+			free(fdtable->table);
 		}
 		pthread_mutex_unlock(&fdtable->mutex);
 		pthread_mutex_destroy(&fdtable->mutex);
@@ -97,6 +101,14 @@ void *__fduserdata_new(FDUSERDATA *fdtable, int fd, size_t count) {
 		if (fdud == NULL)
 			return errno = ENOMEM, NULL;
 		pthread_mutex_lock(&fdtable->mutex);
+		if (fdtable->table == NULL) {
+			fdtable->table = calloc(fdtable->mask + 1, sizeof(struct fduserdata_item *));
+			if (fdtable->table == NULL) {
+				free(fdud);
+				pthread_mutex_unlock(&fdtable->mutex);
+				return errno = ENOMEM, NULL;
+			}
+		}
 		index = fd & fdtable->mask;
 		fdud->fd = fd;
 		fdud->fdtable = fdtable;
@@ -112,8 +124,12 @@ void *fduserdata_get(FDUSERDATA *fdtable, int fd) {
 		pthread_mutex_lock(&fdtable->mutex);
 		int index = fd & fdtable->mask;
 		struct fduserdata_item *fdud;
-		for (fdud = fdtable->table[index]; fdud != NULL && fdud->fd != fd; fdud = fdud->next)
-			;
+		if (fdtable->table == NULL)
+			fdud = NULL;
+		else {
+			for (fdud = fdtable->table[index]; fdud != NULL && fdud->fd != fd; fdud = fdud->next)
+				;
+		}
 		if (fdud == NULL) {
 			pthread_mutex_unlock(&fdtable->mutex);
 			return errno = EBADF, NULL;
@@ -134,7 +150,6 @@ void fduserdata_put(void *data) {
 		pthread_mutex_unlock(&fdud->fdtable->mutex);
 	}
 }
-
 
 int fduserdata_del(void *data) {
 	if (data == NULL)
