@@ -124,8 +124,8 @@ void *fduserdata_get(FDUSERDATA *fdtable, int fd) {
 		if (fdtable->table == NULL)
 			fdud = NULL;
 		else {
-			for (fdud = fdtable->table[index]; fdud != NULL && fdud->fd != fd; fdud = fdud->next)
-				;
+			for (fdud = fdtable->table[index]; fdud != NULL; fdud = fdud->next)
+				if (fdud->fd == fd) break;
 		}
 		if (fdud == NULL) {
 			pthread_mutex_unlock(&fdtable->mutex);

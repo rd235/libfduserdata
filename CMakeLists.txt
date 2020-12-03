@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(fduserdata
-		VERSION 0.0.1
+		VERSION 0.1.2
 		DESCRIPTION "associate file descriptors with user defined data"
 		HOMEPAGE_URL "https://github.com/rd235/libfduserdata"
 		LANGUAGES C)
