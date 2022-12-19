@@ -1,5 +1,3 @@
-# <!-- -->
-
 <!--
 .\" Copyright (C) 2019 VirtualSquare. Project Leader: Renzo Davoli
 .\"
@@ -25,20 +23,20 @@
 .\"
 -->
 
-## NAME
+# NAME
 
-fduserdata_create, fduserdata_destroy, fduserdata_destroy_cb, fduserdata_new, fduserdata_get, fduserdata_put,
-fduserdata_del	- associate file descriptors with user defined data
+fduserdata\_create, fduserdata\_destroy, fduserdata\_destroy\_cb, fduserdata\_new, fduserdata\_get, fduserdata\_put,
+fduserdata\_del	- associate file descriptors with user defined data
 
-## SYNOPSIS
+# SYNOPSIS
 
-`#include <fduserdata.h>`
+`#include *fduserdata.h*`
 
 `FDUSERDATA *fduserdata_create(int ` _size_`);`
 
 `void fduserdata_destroy(FDUSERDATA *`_fdtable_`);`
 
-`typedef void (*fduserdata_destr_cb_t)(int fd, void *data, void *arg);` <br/>
+`typedef void (*fduserdata_destr_cb_t)(int fd, void *data, void *arg);` *br/*
 `void fduserdata_destroy_cb(FDUSERDATA *`_fdtable_`, fduserdata_destr_cb_t ` _callback_`, void *`_arg_`);`
 
 `void *fduserdata_new(FDUSERDATA *`_fdtable_`, int ` _fd_`, ` _type_`);`
@@ -49,7 +47,7 @@ fduserdata_del	- associate file descriptors with user defined data
 
 `int fduserdata_del(void *`_data_`);`
 
-## DESCRIPTION
+# DESCRIPTION
 
 This library permits one to associate file descriptors with user defined data, more precisely it manages
 a data structure whose searching key is a file descriptor.
@@ -70,7 +68,7 @@ Both `fduserdata_new` and `fduserdata_get` lock the access to the element, so th
 
 `fduserdata_del` can be used instead of `fduserdata_put` to delete the element.
 
-## RETURN VALUE
+# RETURN VALUE
 `fduserdata_create` returns the descriptor of the data structure (NULL in case of error).
 
 `fduserdata_new` returns the element of type _type_ just created (NULL in case of error).
@@ -81,41 +79,49 @@ Both `fduserdata_new` and `fduserdata_get` lock the access to the element, so th
 
 On error, _errno_ is set appropriately.
 
-## EXAMPLE
+# EXAMPLE
 
-    fduserdata uses a trivial hash table, the optional arg is the
-    size of the hash table: default value = 64
+fduserdata uses a trivial hash table, the optional arg is the size of the hash table: default value = 64
+```
+  FDUSERDATA table = fduserdata_create(0);
 
-        FDUSERDATA table = fduserdata_create(0);
+  struct mydata {
+  // fd data fields ...
+     };
+```
 
-        struct mydata {
-        // fd data fields ...
-        };
+create a struct mydata for the file descriptor fd.
 
-    create a struct mydata for the file descriptor fd.
+```
+  struct mydata *data = fduserdata_new(table, fd, struct mydata);
+```
 
-        struct mydata *data = fduserdata_new(table, fd, struct mydata);
+.... set user defined data (data-*fields)
 
-    .... set user defined data (data->fields)
+```
+  fduserdata_put(data);
+```
 
-        fduserdata_put(data);
+search for data
+there is mutual exclusion between new/put, get/put (or new/del, get/del) so do not insert time consuming or blocking ops.
 
-    search for data
-    there is mutual exclusion between new/put, get/put (or new/del, get/del)
-    so do not insert time consuming or blocking ops.
+```
+  struct mydata *fddata = fduserdata_get(table, fd);
+  if (fddata) {
+```
 
-        struct mydata *fddata = fduserdata_get(table, fd);
-        if (fddata) {
+... read/update user defined data (data-\>fields)
+(use fduserdata\_del instead of fduserdata\_put to delete the element)
+```
+      fduserdata_put(data);
+  }
+```
 
-    ... read/update user defined data (data->fields)
-    (use fduserdata_del instead of fduserdata_put to delete the element)
+at the end... when table is no longer required
 
-              fduserdata_put(data);
-        }
+```
+  fduserdata_destroy(table);
+```
 
-    at the end... when table is no longer required
-
-        fduserdata_destroy(table);
-
-## AUTHOR
+# AUTHOR
 VirtualSquare. Project leader: Renzo Davoli.
