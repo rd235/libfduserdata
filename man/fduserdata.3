@@ -36,7 +36,7 @@
 . ftr VB CB
 . ftr VBI CBI
 .\}
-.TH "FDUSERDATA" "3" "December 2022" "VirtualSquare" "Library Functions Manual"
+.TH "FDUSERDATA" "3" "January 2023" "VirtualSquare" "Library Functions Manual"
 .hy
 .SH NAME
 .PP
@@ -52,7 +52,10 @@ associate file descriptors with user defined data
 \f[V]void fduserdata_destroy(FDUSERDATA *\f[R]\f[I]fdtable\f[R]\f[V]);\f[R]
 .PP
 \f[V]typedef void (*fduserdata_destr_cb_t)(int fd, void *data, void *arg);\f[R]
-\f[I]br/\f[R]
+.PD 0
+.P
+.PD
+.PP
 \f[V]void fduserdata_destroy_cb(FDUSERDATA *\f[R]\f[I]fdtable\f[R]\f[V], fduserdata_destr_cb_t\f[R]
 \f[I]callback\f[R]\f[V], void *\f[R]\f[I]arg\f[R]\f[V]);\f[R]
 .PP

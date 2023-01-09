@@ -36,7 +36,8 @@ fduserdata\_del	- associate file descriptors with user defined data
 
 `void fduserdata_destroy(FDUSERDATA *`_fdtable_`);`
 
-`typedef void (*fduserdata_destr_cb_t)(int fd, void *data, void *arg);` *br/*
+`typedef void (*fduserdata_destr_cb_t)(int fd, void *data, void *arg);`\
+
 `void fduserdata_destroy_cb(FDUSERDATA *`_fdtable_`, fduserdata_destr_cb_t ` _callback_`, void *`_arg_`);`
 
 `void *fduserdata_new(FDUSERDATA *`_fdtable_`, int ` _fd_`, ` _type_`);`
